@@ -1,0 +1,17 @@
+{
+  "name": "subscription-accesscontrol-backend",
+  "version": "1.0.0",
+  "description": "this is a backend that handles the user access according to the subscription plan ",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"node --env-file=.env --watch server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.1.6"
+  }
+}
