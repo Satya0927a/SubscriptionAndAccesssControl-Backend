@@ -1,6 +1,8 @@
 const userModel = require('../models/userModel')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const isValidEmail = require('../utilis/functions')
+const validateUserInput = require('../middlewares/userinputValidate')
 
 const userrouter = require('express').Router()
 
@@ -12,25 +14,13 @@ userrouter.get('/all',async(req,res,next)=>{
     next(error)
   }
 })
-userrouter.post('/create',async(req,res,next)=>{
+userrouter.post('/create',validateUserInput,async(req,res,next)=>{
   try {
     const {username,email,password} = req.body
     if(!username || !email || !password){
       return res.status(400).send({
         success:false,
         message:"Invalid input,"
-      })
-    }
-    if(!isValidEmail(email)){
-      return res.status(400).send({
-        success:false,
-        message:"Incorrect Email format"
-      })
-    }
-    if(password.length < 8 || username.length < 3){
-      return res.status(400).send({
-        success:false,
-        message:"The length of password and username must be 8 and 3 respectively"
       })
     }
     const passhash = await bcrypt.hash(password,10)
@@ -49,4 +39,46 @@ userrouter.post('/create',async(req,res,next)=>{
     next(error)
   }
 })
+userrouter.post('/login',validateUserInput,async(req,res,next)=>{
+  const{email,password} = req.body
+  console.log(email,password);
+  
+  if(!email || !password){
+    return res.status(400).send({
+      success:false,
+      message:'Invalid inputs'
+    })
+  }
+  const user = await userModel.findOne({email:email})
+  console.log(user);
+  
+  if(!user){
+    return res.status(401).send({
+      success:false,
+      message:"Incorrect credentials"
+    })
+  }
+  const passverify = await bcrypt.compare(password,user.passwordHash)
+  if(!passverify){
+    return res.status(401).send({
+      success:false,
+      message:"Incorrect credentials"
+    })
+  }
+  
+  const payload = {
+    userid : user._id
+  }
+  const token = jwt.sign(payload,process.env.SECRET)
+  res.send({
+    success:true,
+    message:"logged in successfully",
+    userdata:{
+      username:user.username,
+      email:user.email,
+      token:token
+    }
+  })
+})
+
 module.exports = userrouter

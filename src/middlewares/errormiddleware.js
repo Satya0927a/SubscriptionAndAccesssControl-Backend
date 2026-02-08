@@ -1,5 +1,5 @@
 const errorHandler = (err,req,res,next)=>{
-  console.log(err.name);
+  console.log(err);
   if(err.name == "MongoServerError"){
     res.status(403).send({
       success:false,
