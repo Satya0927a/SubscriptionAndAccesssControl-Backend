@@ -28,10 +28,7 @@ subscriptionrouter.patch('/', authmiddlware, async (req, res, next) => {
       })
     }
     let userSubs = await subscriptionModel.findOne({ userid: req.user.userid })
-    console.log(userSubs);
-
     const plan = await planModel.findById(planId)
-
     if (!userSubs) {
       return res.status(404).send({
         success: false,
