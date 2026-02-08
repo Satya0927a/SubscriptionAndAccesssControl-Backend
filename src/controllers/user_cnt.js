@@ -2,6 +2,8 @@ const userModel = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const validateUserInput = require('../middlewares/userinputValidate')
+const subscriptionModel = require('../models/subscriptionModel')
+const planModel = require('../models/planModel')
 
 const userrouter = require('express').Router()
 
@@ -25,6 +27,9 @@ userrouter.post('/create',validateUserInput,async(req,res,next)=>{
     const passhash = await bcrypt.hash(password,10)
     const newuser = new userModel({username:username,email:email,passwordHash:passhash})
     await newuser.save()
+    const freeplan = await planModel.findOne({planName:"free"})
+    const usersubsc = new subscriptionModel({userid:newuser._id,plan:freeplan._id})
+    await usersubsc.save()
     res.status(201).send({
       success:true,
       message:"New user accound created",

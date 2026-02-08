@@ -3,6 +3,7 @@ const errorHandler = require('./middlewares/errormiddleware')
 const userrouter = require('./controllers/user_cnt')
 const mongoose = require('mongoose')
 const planrouter = require('./controllers/plan_cnt')
+const subscriptionrouter = require('./controllers/subsc_cnt')
 const app = express()
 
 //?connecting to the database
@@ -18,6 +19,7 @@ app.get('/',(req,res)=>{
 })
 app.use('/api/user',userrouter)
 app.use('/api/plan',planrouter)
+app.use('/api/subscription',subscriptionrouter)
 app.use(errorHandler)
 
 module.exports = app
