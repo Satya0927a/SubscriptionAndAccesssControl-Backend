@@ -8,9 +8,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"node --env-file=.env --watch server.js"
+    "dev": "node --env-file=.env --watch server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^5.2.1",
     "mongoose": "^9.1.6"
   }
