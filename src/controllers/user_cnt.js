@@ -1,7 +1,6 @@
 const userModel = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const isValidEmail = require('../utilis/functions')
 const validateUserInput = require('../middlewares/userinputValidate')
 
 const userrouter = require('express').Router()
@@ -41,7 +40,6 @@ userrouter.post('/create',validateUserInput,async(req,res,next)=>{
 })
 userrouter.post('/login',validateUserInput,async(req,res,next)=>{
   const{email,password} = req.body
-  console.log(email,password);
   
   if(!email || !password){
     return res.status(400).send({
@@ -50,7 +48,6 @@ userrouter.post('/login',validateUserInput,async(req,res,next)=>{
     })
   }
   const user = await userModel.findOne({email:email})
-  console.log(user);
   
   if(!user){
     return res.status(401).send({

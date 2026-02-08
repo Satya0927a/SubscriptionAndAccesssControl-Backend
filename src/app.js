@@ -2,6 +2,7 @@ const express = require('express')
 const errorHandler = require('./middlewares/errormiddleware')
 const userrouter = require('./controllers/user_cnt')
 const mongoose = require('mongoose')
+const planrouter = require('./controllers/plan_cnt')
 const app = express()
 
 //?connecting to the database
@@ -16,6 +17,7 @@ app.get('/',(req,res)=>{
   res.send("Welcome to the Subscription Backend")
 })
 app.use('/api/user',userrouter)
+app.use('/api/plan',planrouter)
 app.use(errorHandler)
 
 module.exports = app
