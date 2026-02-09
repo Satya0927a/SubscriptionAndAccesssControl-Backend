@@ -7,14 +7,6 @@ const planModel = require('../models/planModel')
 
 const userrouter = require('express').Router()
 
-userrouter.get('/all',async(req,res,next)=>{
-  try {
-    const allusers = await userModel.find({})
-    res.send(allusers)
-  } catch (error) {
-    next(error)
-  }
-})
 userrouter.post('/create',validateUserInput,async(req,res,next)=>{
   try {
     const {username,email,password} = req.body

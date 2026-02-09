@@ -37,11 +37,29 @@ This project models how real SaaS products control feature access based on:
 ## To run this locally
 ```
 git clone https://github.com/Satya0927a/SubscriptionAndAccesssControl-Backend.git
+
 //open the folder
 npm install
+
 //before running add an .env to the main directory with the following fields
 MONGO_URI = your mongodb uri
 SECRET = your secret string, will be used by the jwt to <any>
+
 //after setting up the .env run the project
 npm run dev
 ```
+
+## Routes
+- User routes
+  - POST /api/user/create => to create new user 
+  - POST /api/user/login => login user
+  - GET /api/subscription => to get the subscription details of the user
+  - PATCH /api/subscription => to update the subscription plan, coz not real payment is invloved assumes the payment is success
+- Admin routes
+  - POST /api/plan => to create a new plan
+- Public routes
+  - GET /api/plan => to get all the plan details available
+- App routes
+  - POST /api/app/gpt => to talk to chatbot
+  - POST /api/app/imagegen => to generate image
+  - POST /api/app/videogen => to genrate video
