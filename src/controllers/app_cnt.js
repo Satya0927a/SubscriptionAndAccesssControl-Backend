@@ -12,7 +12,7 @@ approuter.post('/gpt',async(req,res,next)=>{
       })
     }
     const userSubs = await subscriptionModel.findOne({userid:req.user.userid}).populate('plan')
-    if(userSubs.status == "expired" ||(userSubs.endDate && Date.now() > userSubs.endDate)){
+    if(userSubs.status != "active" ||(userSubs.endDate && Date.now() > userSubs.endDate)){
       return res.status(403).send({
         success:false,
         message:"Your plan is expired"
@@ -37,6 +37,59 @@ approuter.post('/gpt',async(req,res,next)=>{
     res.send({
       success:true,
       message:"generated the request",
+      gendata:gendata
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+approuter.post('/imagegen',async(req,res,next)=>{
+  try {
+    const {prompt} = req.body //will not be used just for dummy
+    if(!prompt){
+      return res.status(400).send({
+        success:false,
+        message:"Invalid input prompt missing"
+      })
+    }
+    const userSubs = await subscriptionModel.findOne({userid:req.user.userid}).populate('plan')
+    if(!userSubs){
+      return res.status(500).send({
+        success:false,
+        message:"Subscription model not found for this user, this error has been forwaded and will be looked into sorry for your inconvinence"
+      })
+    }
+    if(userSubs.status != "active"){
+      return res.status(403).send({
+        success:false,
+        message:`Your subscription model is ${userSubs.status}`
+      })
+    }
+    if(userSubs.endDate && (Date.now() > userSubs.endDate)){
+      return res.status(403).send({
+        success:false,
+        message:"Your subscription is expired"
+      })
+    }
+    if(!userSubs.plan.access.genImage){
+      return res.status(403).send({
+        success:false,
+        message:"This feature is not included in you subscription plan"
+      })
+    }
+    if(userSubs.plan.limits.MaxgenImage - userSubs.usage.genImage == 0){ //will never hit 0 if limit is -1 that is unlimited
+      return res.status(403).send({
+        success:false,
+        message:"You have exhausted your image gen limit"
+      })
+    }
+    const gendata = "image binary genareted beep beep booop...." // this is where you will call the api for gen
+    //?update the usage
+    await subscriptionModel.findOneAndUpdate({userid:req.user.userid},{$inc:{"usage.genImage":1}})
+    res.send({
+      success:true,
+      message:"generated your image",
       gendata:gendata
     })
   } catch (error) {
